@@ -16,27 +16,42 @@ type Settings = {
     selectedCountries: Country[];
 };
 
+const DEFAULT_SETTINGS: Settings = {
+    isTaxFreeEnabled: true,
+    taxFreeRate: 10,
+    selectedCountries: [
+        { code: 'TR', name: 'Turkey', currency: 'TRY' },
+        { code: 'JP', name: 'Japan', currency: 'JPY' },
+    ]
+};
+
 export default function Calculator() {
     const [price, setPrice] = useState<string>('');
-    const [settings, setSettings] = useState<Settings | null>(null);
+    const [settings, setSettings] = useState<Settings>(DEFAULT_SETTINGS);
     const [exchangeRates, setExchangeRates] = useState<Record<string, number>>({});
     const [loading, setLoading] = useState(true);
     const [mounted, setMounted] = useState(false);
 
     useEffect(() => {
         setMounted(true);
-        const savedSettings = localStorage.getItem('taxFreeSettings');
-        if (savedSettings) {
-            setSettings(JSON.parse(savedSettings));
+        try {
+            const savedSettings = localStorage.getItem('taxFreeSettings');
+            if (savedSettings) {
+                setSettings(JSON.parse(savedSettings));
+            }
+        } catch (error) {
+            console.error('LocalStorage error:', error);
+            // Varsayılan ayarları kullan
+            setSettings(DEFAULT_SETTINGS);
         }
     }, []);
 
     useEffect(() => {
-        if (settings?.selectedCountries) {
+        if (mounted && settings?.selectedCountries) {
             const touristCurrency = settings.selectedCountries[1].currency;
             fetchExchangeRates(touristCurrency);
         }
-    }, [settings]);
+    }, [settings, mounted]);
 
     const fetchExchangeRates = async (baseCurrency: string) => {
         try {
@@ -118,7 +133,7 @@ export default function Calculator() {
     };
 
     if (!mounted) {
-        return null;
+        return <div className={styles.loading}>Loading...</div>;
     }
 
     if (!settings || loading) {
