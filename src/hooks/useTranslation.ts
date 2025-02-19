@@ -21,20 +21,21 @@ export function useTranslation() {
   const t = (key: string) => {
     // key'i nokta notasyonuna göre böl (örn: "common.settings")
     const keys = key.split(".");
-    let value = translations[language];
+    let translation = translations[language];
 
     // Her bir key seviyesini kontrol et
     for (const k of keys) {
-      if (value && typeof value === "object" && k in value) {
-        value = value[k as keyof typeof value];
+      if (translation && typeof translation === "object" && k in translation) {
+        translation = translation[k as keyof typeof translation];
       } else {
         // Çeviri bulunamazsa İngilizce versiyonunu dene
-        value = getEnglishFallback(keys);
+        translation = getEnglishFallback(keys);
         break;
       }
     }
 
-    return value || key; // Çeviri bulunamazsa key'i göster
+    // Eğer çeviri bir string değilse veya bulunamazsa key'i göster
+    return typeof translation === "string" ? translation : key;
   };
 
   const getEnglishFallback = (keys: string[]) => {
@@ -46,12 +47,16 @@ export function useTranslation() {
         return undefined;
       }
     }
-    return value;
+    return typeof value === "string" ? value : undefined;
   };
 
   const changeLanguage = (newLang: Language) => {
-    setLanguage(newLang);
-    localStorage.setItem("language", newLang);
+    if (newLang in translations) {
+      setLanguage(newLang);
+      localStorage.setItem("language", newLang);
+      // Sayfayı yeniden yükle
+      window.location.reload();
+    }
   };
 
   return {

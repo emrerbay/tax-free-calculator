@@ -179,11 +179,11 @@ export default function Calculator() {
     };
 
     if (!mounted) {
-        return <div className={styles.loading}>Loading...</div>;
+        return <div className={styles.loading}>{t('common.loading')}</div>;
     }
 
     if (!settings || loading) {
-        return <div className={styles.loading}>Loading...</div>;
+        return <div className={styles.loading}>{t('common.loading')}</div>;
     }
 
     return (
@@ -198,7 +198,7 @@ export default function Calculator() {
                     animate={{ y: 0 }}
                     className={styles.title}
                 >
-                    Tax-Free Shopping Calculator
+                    {t('common.title')}
                 </motion.h1>
 
                 <motion.div
@@ -211,7 +211,7 @@ export default function Calculator() {
                             <span className={styles.flag}>
                                 {settings.selectedCountries[1].flag}
                             </span>
-                            Price in {settings.selectedCountries[1].name}
+                            {t('common.priceIn')} {settings.selectedCountries[1].name}
                         </label>
                         <div className={styles.inputWrapper}>
                             <span className={styles.currencyPrefix}>
@@ -222,7 +222,7 @@ export default function Calculator() {
                                 id="price"
                                 value={price}
                                 onChange={(e) => setPrice(e.target.value)}
-                                placeholder="Enter amount..."
+                                placeholder={t('common.enterAmount')}
                                 className={styles.input}
                             />
                         </div>
@@ -237,33 +237,33 @@ export default function Calculator() {
                             />
                             <span className={styles.slider}></span>
                             <span className={styles.switchLabel}>
-                                Calculate Tax-Free Price ({settings.taxFreeRate}% off)
+                                {t('common.calculateTaxFree')} ({settings.taxFreeRate}% {t('common.off')})
                             </span>
                         </label>
                     </div>
 
                     <div className={styles.results}>
                         <div className={styles.resultItem}>
-                            <span>Original Price ({settings.selectedCountries[1].currency}):</span>
+                            <span>{t('common.originalPrice')} ({settings.selectedCountries[1].currency}):</span>
                             <span>{getOriginalPrice()}</span>
                         </div>
 
                         {isTaxFreeEnabled && (
                             <div className={styles.resultItem}>
-                                <span>Tax-Free Price ({settings.selectedCountries[1].currency}):</span>
+                                <span>{t('common.taxFreePrice')} ({settings.selectedCountries[1].currency}):</span>
                                 <span>{getTaxFreePrice()}</span>
                             </div>
                         )}
 
                         {settings.selectedCountries.map((country, index) => {
-                            if (index === 1) return null; // Turist ülkesini atlıyoruz
+                            if (index === 1) return null;
                             const amount = isTaxFreeEnabled
                                 ? Number(price) * (1 - settings.taxFreeRate / 100)
                                 : Number(price);
 
                             return (
                                 <div key={country.code} className={styles.resultItem}>
-                                    <span>Price in {country.name} ({country.currency}):</span>
+                                    <span>{t('common.priceIn')} {country.name} ({country.currency}):</span>
                                     <span>{price ? calculatePrice(amount, country.currency) : '-'}</span>
                                 </div>
                             );
@@ -305,7 +305,7 @@ export default function Calculator() {
                         className={styles.addToCartButton}
                         disabled={!price}
                     >
-                        Add to Cart 🛒
+                        {t('common.addToCart')}
                     </motion.button>
                 </motion.div>
 
@@ -319,7 +319,7 @@ export default function Calculator() {
                         whileTap={{ scale: 0.95 }}
                         className={styles.settingsButton}
                     >
-                        ⚙️ Settings
+                        {t('common.settings')}
                     </motion.div>
                 </Link>
             </main>

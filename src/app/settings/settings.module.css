@@ -1,66 +1,94 @@
-.container {
+.page {
+  min-height: 100vh;
+  padding: 2rem;
+  background: var(--background);
+  background-image: radial-gradient(
+      circle at 20% 20%,
+      var(--primary-light) 0%,
+      transparent 25%
+    ),
+    radial-gradient(circle at 80% 80%, var(--accent-light) 0%, transparent 25%);
+  background-attachment: fixed;
+}
+
+.settings {
   max-width: 800px;
   margin: 0 auto;
-  padding: 40px 20px;
-  font-family: var(--font-geist-sans);
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
 }
 
 .title {
-  font-size: 2.5rem;
-  font-weight: 700;
-  margin-bottom: 2rem;
+  font-size: 3rem;
+  font-weight: 800;
   text-align: center;
-  background: linear-gradient(to right, #007cf0, #00dfd8);
+  background: var(--gradient-primary);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-}
-
-.subtitle {
-  font-size: 1.2rem;
-  font-weight: 500;
-  margin-bottom: 1rem;
+  margin-bottom: 2rem;
 }
 
 .section {
-  background: var(--gray-alpha-100);
-  border-radius: 16px;
-  padding: 24px;
-  margin-bottom: 24px;
-  backdrop-filter: blur(8px);
-  border: 1px solid var(--gray-alpha-200);
+  background: var(--surface);
+  border-radius: 24px;
+  padding: 2rem;
+  box-shadow: var(--shadow-lg);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--border);
 }
 
-.settingItem {
-  margin-bottom: 16px;
+.section h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  color: var(--primary);
 }
 
-.label {
+/* Dil seçici stilleri */
+.languageButtons {
   display: flex;
-  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.languageButton {
+  display: flex;
   align-items: center;
-  font-weight: 500;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background: var(--surface);
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 1rem;
 }
 
-.input,
-.select {
-  width: 120px;
-  padding: 8px 12px;
-  border: 1px solid var(--gray-alpha-200);
-  border-radius: 6px;
-  font-size: 14px;
-  background: var(--background);
+.languageButton:hover {
+  background: var(--surface-hover);
+  transform: translateY(-2px);
 }
 
-.select {
-  width: 200px;
+.languageButton.active {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: white;
 }
 
-/* Switch stillemesi */
+/* Tax-Free ayarları */
+.taxFreeSettings {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
 .switch {
   position: relative;
-  display: inline-block;
-  width: 48px;
-  height: 24px;
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+  gap: 1rem;
 }
 
 .switch input {
@@ -70,15 +98,14 @@
 }
 
 .slider {
-  position: absolute;
-  cursor: pointer;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: var(--gray-alpha-200);
-  transition: 0.4s;
-  border-radius: 24px;
+  position: relative;
+  display: inline-block;
+  width: 52px;
+  height: 28px;
+  background-color: var(--surface);
+  border: 2px solid var(--border);
+  border-radius: 34px;
+  transition: all 0.4s;
 }
 
 .slider:before {
@@ -88,150 +115,152 @@
   width: 20px;
   left: 2px;
   bottom: 2px;
-  background-color: var(--background);
-  transition: 0.4s;
+  background-color: var(--foreground-muted);
   border-radius: 50%;
+  transition: all 0.4s;
 }
 
 input:checked + .slider {
-  background-color: var(--foreground);
+  background-color: var(--primary);
+  border-color: var(--primary);
 }
 
 input:checked + .slider:before {
   transform: translateX(24px);
+  background-color: white;
 }
 
-.addButton,
-.removeButton,
-.saveButton {
-  width: 100%;
-  padding: 12px;
-  border: none;
-  border-radius: 6px;
+.switchLabel {
   font-weight: 500;
-  cursor: pointer;
-  transition: opacity 0.2s;
+  color: var(--foreground);
 }
 
-.addButton {
-  background: var(--foreground);
-  color: var(--background);
+.rateInput {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
 }
 
-.removeButton {
-  background: #dc2626;
-  color: white;
+.rateInput input {
+  width: 100px;
+  padding: 0.5rem;
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  font-size: 1rem;
+  background: var(--background);
 }
 
-.saveButton {
-  background: var(--foreground);
-  color: var(--background);
-  margin-top: 24px;
-}
-
-.addButton:hover,
-.removeButton:hover,
-.saveButton:hover {
-  opacity: 0.9;
-}
-
+/* Ülke seçimi */
 .regionGroup {
-  margin-bottom: 24px;
+  margin-bottom: 2rem;
 }
 
 .regionTitle {
-  font-size: 1.1rem;
+  font-size: 1.2rem;
   font-weight: 500;
-  margin-bottom: 12px;
-  color: var(--gray-500);
+  margin-bottom: 1rem;
+  color: var(--foreground-muted);
 }
 
 .countryGrid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  gap: 12px;
+  gap: 1rem;
 }
 
 .countryButton {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 12px;
-  background: var(--primary-dark);
-  border: 1px solid var(--gray-alpha-200);
-  border-radius: 8px;
+  gap: 0.5rem;
+  padding: 1rem;
+  background: var(--background);
+  border: 2px solid var(--border);
+  border-radius: 12px;
   cursor: pointer;
   transition: all 0.2s;
 }
 
+.countryButton:hover {
+  background: var(--surface-hover);
+  transform: translateY(-2px);
+}
+
 .countryButton.selected {
-  background: var(--foreground);
-  color: var(--background);
+  background: var(--primary);
+  border-color: var(--primary);
+  color: white;
 }
 
 .flag {
-  font-size: 1.5rem;
+  font-size: 1.2rem;
 }
 
-.countryName {
-  flex: 1;
-  font-size: 0.9rem;
+.name {
+  font-weight: 500;
 }
 
 .currency {
   font-family: var(--font-geist-mono);
-  font-size: 0.8rem;
+  font-size: 0.9rem;
   opacity: 0.7;
+  margin-left: auto;
 }
 
-.rateInput {
-  position: relative;
-  width: 120px;
+/* Butonlar */
+.buttons {
+  display: flex;
+  gap: 1rem;
+  margin-top: 2rem;
 }
 
-.percentSign {
-  position: absolute;
-  right: 12px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: var(--gray-500);
+.cancelButton,
+.saveButton {
+  flex: 1;
+  padding: 1rem;
+  border-radius: 12px;
+  font-weight: 500;
+  text-align: center;
+  transition: all 0.2s;
 }
 
-@media (max-width: 600px) {
-  .container {
-    padding: 20px;
+.cancelButton {
+  background: var(--surface);
+  border: 2px solid var(--border);
+  color: var(--foreground);
+  text-decoration: none;
+}
+
+.saveButton {
+  background: var(--primary);
+  border: none;
+  color: white;
+  cursor: pointer;
+}
+
+.cancelButton:hover,
+.saveButton:hover {
+  transform: translateY(-2px);
+}
+
+/* Responsive tasarım */
+@media (max-width: 768px) {
+  .page {
+    padding: 1rem;
   }
 
   .title {
-    font-size: 1.5rem;
+    font-size: 2rem;
   }
 
-  .label {
+  .section {
+    padding: 1.5rem;
+  }
+
+  .countryGrid {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  }
+
+  .buttons {
     flex-direction: column;
-    align-items: flex-start;
-    gap: 8px;
   }
-
-  .input,
-  .select {
-    width: 100%;
-  }
-}
-
-.hint {
-  font-size: 0.9rem;
-  color: var(--gray-500);
-  margin-bottom: 16px;
-  text-align: center;
-}
-
-.countryButton:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.saveButton:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-  background: var(--gray-alpha-200);
 }

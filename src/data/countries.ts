@@ -6,7 +6,7 @@ export type Country = {
   region: string;
 };
 
-export const AVAILABLE_COUNTRIES: Country[] = [
+export const countries: Country[] = [
   { code: "TR", name: "Turkey", currency: "TRY", flag: "🇹🇷", region: "Europe" },
   { code: "JP", name: "Japan", currency: "JPY", flag: "🇯🇵", region: "Asia" },
   {
@@ -59,26 +59,16 @@ export const AVAILABLE_COUNTRIES: Country[] = [
     flag: "🇨🇦",
     region: "Americas",
   },
-  {
-    code: "CH",
-    name: "Switzerland",
-    currency: "CHF",
-    flag: "🇨🇭",
-    region: "Europe",
-  },
-  {
-    code: "HK",
-    name: "Hong Kong",
-    currency: "HKD",
-    flag: "🇭🇰",
-    region: "Asia",
-  },
 ];
 
-export const groupedCountries = AVAILABLE_COUNTRIES.reduce((acc, country) => {
+// Ülkeleri bölgelere göre grupla
+export const groupedCountries = countries.reduce((acc, country) => {
   if (!acc[country.region]) {
     acc[country.region] = [];
   }
   acc[country.region].push(country);
   return acc;
 }, {} as Record<string, Country[]>);
+
+// Bölgeleri sırala
+export const regions = Object.keys(groupedCountries).sort();

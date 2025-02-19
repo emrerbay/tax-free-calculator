@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useCart } from '@/context/CartContext';
 import dynamic from 'next/dynamic';
 import styles from './Analytics.module.css';
+import type { ChartOptions } from 'chart.js';
 
 // Chart'ı client-side'da dinamik olarak import edelim
 const Line = dynamic(
@@ -20,7 +21,10 @@ import {
     LineElement,
     Title,
     Tooltip,
-    Legend
+    Legend,
+    Scale,
+    ScaleOptionsByType,
+    LinearScaleOptions
 } from 'chart.js';
 
 // Callback fonksiyonu için tip tanımı
@@ -76,7 +80,7 @@ export default function Analytics() {
         ]
     };
 
-    const options = {
+    const options: ChartOptions<'line'> = {
         responsive: true,
         plugins: {
             legend: {
@@ -89,17 +93,20 @@ export default function Analytics() {
         },
         scales: {
             y: {
+                type: 'linear' as const,
+                display: true,
+                position: 'left' as const,
                 beginAtZero: true,
                 ticks: {
-                    callback: ((value: number) => {
+                    callback: function (value: number) {
                         if (items.length > 0) {
                             return new Intl.NumberFormat('ja-JP', {
                                 style: 'currency',
                                 currency: items[0].touristCountry.currency
                             }).format(value);
                         }
-                        return value;
-                    }) as FormatCallback
+                        return value.toString();
+                    }
                 }
             }
         }
