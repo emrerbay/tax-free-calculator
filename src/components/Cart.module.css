@@ -49,6 +49,7 @@
   display: flex;
   align-items: center;
   gap: 1rem;
+  flex-wrap: wrap;
 }
 
 .originalPrice {
@@ -123,6 +124,12 @@
   font-size: 3rem;
   margin-bottom: 1rem;
   display: block;
+}
+
+.regularPrice {
+  font-family: var(--font-geist-mono);
+  font-weight: 500;
+  color: var(--foreground);
 }
 
 /* Responsive Design */

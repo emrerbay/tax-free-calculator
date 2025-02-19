@@ -1,0 +1,126 @@
+.favorites {
+  background: var(--surface);
+  border-radius: 24px;
+  padding: 1rem;
+  margin-top: 2rem;
+  box-shadow: var(--shadow-lg);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+
+.toggleButton {
+  width: 100%;
+  padding: 1rem;
+  background: none;
+  border: none;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  color: var(--primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.favoritesList {
+  margin-top: 1rem;
+  display: grid;
+  gap: 1rem;
+}
+
+.favoriteItem {
+  background: var(--background);
+  border-radius: 12px;
+  padding: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid var(--border);
+}
+
+.itemInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.flags {
+  font-size: 1.2rem;
+}
+
+.price {
+  font-family: var(--font-geist-mono);
+  color: var(--accent);
+  font-weight: 500;
+}
+
+.count {
+  background: var(--primary);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+@media (max-width: 768px) {
+  .favorites {
+    padding: 0.5rem;
+  }
+
+  .favoriteItem {
+    flex-direction: column;
+    gap: 1rem;
+    text-align: center;
+  }
+}
+
+.categoriesList {
+  margin-top: 1rem;
+  display: grid;
+  gap: 1rem;
+}
+
+.categoryItem {
+  background: var(--background);
+  border-radius: 12px;
+  padding: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid var(--border);
+}
+
+.categoryInfo {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.categoryIcon {
+  font-size: 1.5rem;
+}
+
+.categoryName {
+  font-weight: 500;
+}
+
+.categoryStats {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.5rem;
+}
+
+.categoryTotal {
+  font-family: var(--font-geist-mono);
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.categoryCount {
+  font-size: 0.9rem;
+  color: var(--foreground-muted);
+}

@@ -7,6 +7,10 @@ import { motion } from 'framer-motion';
 import { type Country } from '@/data/countries';
 import { useCart } from '@/context/CartContext';
 import Cart from './Cart';
+import Analytics from './Analytics';
+import FavoriteItems from './FavoriteItems';
+import { categories } from '@/data/categories';
+import { useTranslation } from '@/hooks/useTranslation';
 
 type Settings = {
     isTaxFreeEnabled: boolean;
@@ -30,18 +34,23 @@ export default function Calculator() {
     const [loading, setLoading] = useState(true);
     const [mounted, setMounted] = useState(false);
     const { addItem } = useCart();
+    const [selectedCategory, setSelectedCategory] = useState(categories[0]);
+    const { t } = useTranslation();
+    const [isTaxFreeEnabled, setIsTaxFreeEnabled] = useState(true);
 
     useEffect(() => {
         setMounted(true);
         try {
             const savedSettings = localStorage.getItem('taxFreeSettings');
             if (savedSettings) {
-                setSettings(JSON.parse(savedSettings));
+                const parsedSettings = JSON.parse(savedSettings);
+                setSettings(parsedSettings);
+                setIsTaxFreeEnabled(parsedSettings.isTaxFreeEnabled);
             }
         } catch (error) {
             console.error('LocalStorage error:', error);
-            // Varsayılan ayarları kullan
             setSettings(DEFAULT_SETTINGS);
+            setIsTaxFreeEnabled(DEFAULT_SETTINGS.isTaxFreeEnabled);
         }
     }, []);
 
@@ -127,7 +136,7 @@ export default function Calculator() {
         const taxFreeAmount = Number(price) * (1 - settings.taxFreeRate / 100);
         return new Intl.NumberFormat('ja-JP', {
             style: 'currency',
-            currency: 'JPY',
+            currency: settings.selectedCountries[1].currency,
         }).format(taxFreeAmount);
     };
 
@@ -135,19 +144,38 @@ export default function Calculator() {
         if (!price || !settings) return;
 
         const originalPrice = Number(price);
-        const taxFreePrice = originalPrice * (1 - settings.taxFreeRate / 100);
+        const finalPrice = isTaxFreeEnabled
+            ? originalPrice * (1 - settings.taxFreeRate / 100)
+            : originalPrice;
+
         const exchangeRate = exchangeRates[settings.selectedCountries[0].currency] || 0;
 
         addItem({
             originalPrice,
-            taxFreePrice,
+            taxFreePrice: finalPrice,
             touristCountry: settings.selectedCountries[1],
             homeCountry: settings.selectedCountries[0],
             exchangeRate,
+            category: selectedCategory,
         });
 
-        // Optional: Clear price after adding to cart
         setPrice('');
+        setSelectedCategory(categories[0]);
+    };
+
+    const handleTaxFreeToggle = () => {
+        const newValue = !isTaxFreeEnabled;
+        setIsTaxFreeEnabled(newValue);
+
+        // Settings'i güncelle
+        const newSettings = {
+            ...settings,
+            isTaxFreeEnabled: newValue
+        };
+        setSettings(newSettings);
+
+        // LocalStorage'ı güncelle
+        localStorage.setItem('taxFreeSettings', JSON.stringify(newSettings));
     };
 
     if (!mounted) {
@@ -201,13 +229,16 @@ export default function Calculator() {
                     </div>
 
                     <div className={styles.checkboxGroup}>
-                        <label>
+                        <label className={styles.switch}>
                             <input
                                 type="checkbox"
-                                checked={settings.isTaxFreeEnabled}
-                                readOnly
+                                checked={isTaxFreeEnabled}
+                                onChange={handleTaxFreeToggle}
                             />
-                            Calculate Tax-Free Price ({settings.taxFreeRate}% off)
+                            <span className={styles.slider}></span>
+                            <span className={styles.switchLabel}>
+                                Calculate Tax-Free Price ({settings.taxFreeRate}% off)
+                            </span>
                         </label>
                     </div>
 
@@ -217,7 +248,7 @@ export default function Calculator() {
                             <span>{getOriginalPrice()}</span>
                         </div>
 
-                        {settings.isTaxFreeEnabled && (
+                        {isTaxFreeEnabled && (
                             <div className={styles.resultItem}>
                                 <span>Tax-Free Price ({settings.selectedCountries[1].currency}):</span>
                                 <span>{getTaxFreePrice()}</span>
@@ -226,9 +257,9 @@ export default function Calculator() {
 
                         {settings.selectedCountries.map((country, index) => {
                             if (index === 1) return null; // Turist ülkesini atlıyoruz
-                            const amount = settings.isTaxFreeEnabled ?
-                                Number(price) * (1 - settings.taxFreeRate / 100) :
-                                Number(price);
+                            const amount = isTaxFreeEnabled
+                                ? Number(price) * (1 - settings.taxFreeRate / 100)
+                                : Number(price);
 
                             return (
                                 <div key={country.code} className={styles.resultItem}>
@@ -237,6 +268,34 @@ export default function Calculator() {
                                 </div>
                             );
                         })}
+                    </div>
+
+                    <div className={styles.categorySelect}>
+                        <label>
+                            <span className={styles.categoryLabel}>
+                                {t('common.category')}
+                                <span className={styles.selectedCategory}>
+                                    {selectedCategory.icon}
+                                </span>
+                            </span>
+                        </label>
+                        <div className={styles.categoryButtons}>
+                            {categories.map(category => (
+                                <motion.button
+                                    key={category.id}
+                                    className={`${styles.categoryButton} ${selectedCategory.id === category.id ? styles.selected : ''
+                                        }`}
+                                    onClick={() => setSelectedCategory(category)}
+                                    whileHover={{ scale: 1.05 }}
+                                    whileTap={{ scale: 0.95 }}
+                                >
+                                    <span role="img" aria-label={category.name}>
+                                        {category.icon}
+                                    </span>
+                                    <span>{t(`categories.${category.id}`)}</span>
+                                </motion.button>
+                            ))}
+                        </div>
                     </div>
 
                     <motion.button
@@ -251,6 +310,8 @@ export default function Calculator() {
                 </motion.div>
 
                 <Cart />
+                <Analytics />
+                <FavoriteItems />
 
                 <Link href="/settings" className={styles.settingsButtonWrapper}>
                     <motion.div

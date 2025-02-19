@@ -1,0 +1,100 @@
+export const translations = {
+  en: {
+    common: {
+      settings: "Settings",
+      save: "Save",
+      cancel: "Cancel",
+      loading: "Loading...",
+      empty: "No items found",
+      category: "Select Category",
+    },
+    categories: {
+      food: "Food & Drinks",
+      tech: "Technology",
+      fashion: "Fashion",
+      transport: "Transportation",
+      beauty: "Beauty & Health",
+      gifts: "Gifts & Souvenirs",
+      entertainment: "Entertainment",
+      other: "Other",
+    },
+    analytics: {
+      title: "Shopping Analysis",
+      dailySpending: "Daily Tax-Free Shopping",
+      byCategory: "Spending by Category",
+      total: "Total",
+    },
+    favorites: {
+      title: "Frequently Bought",
+      show: "Show Frequently Bought",
+      hide: "Hide Frequently Bought",
+      timesBought: "times bought",
+    },
+  },
+  ja: {
+    common: {
+      settings: "設定",
+      save: "保存",
+      cancel: "キャンセル",
+      loading: "読み込み中...",
+      empty: "アイテムが見つかりません",
+      category: "カテゴリーを選択",
+    },
+    categories: {
+      food: "飲食",
+      tech: "テクノロジー",
+      fashion: "ファッション",
+      transport: "交通",
+      beauty: "美容・健康",
+      gifts: "ギフト・お土産",
+      entertainment: "エンターテイメント",
+      other: "その他",
+    },
+    analytics: {
+      title: "ショッピング分析",
+      dailySpending: "免税品の日別購入",
+      byCategory: "カテゴリー別支出",
+      total: "合計",
+    },
+    favorites: {
+      title: "よく購入する商品",
+      show: "よく購入する商品を表示",
+      hide: "よく購入する商品を非表示",
+      timesBought: "回購入",
+    },
+  },
+  tr: {
+    common: {
+      settings: "Ayarlar",
+      save: "Kaydet",
+      cancel: "İptal",
+      loading: "Yükleniyor...",
+      empty: "Öğe bulunamadı",
+      category: "Kategori Seç",
+    },
+    categories: {
+      food: "Yeme & İçme",
+      tech: "Teknoloji",
+      fashion: "Giyim",
+      transport: "Ulaşım",
+      beauty: "Güzellik & Sağlık",
+      gifts: "Hediyeler & Hediyelik",
+      entertainment: "Eğlence",
+      other: "Diğer",
+    },
+    analytics: {
+      title: "Alışveriş Analizi",
+      dailySpending: "Günlük Tax-Free Alışveriş",
+      byCategory: "Kategoriye Göre Harcama",
+      total: "Toplam",
+    },
+    favorites: {
+      title: "Sık Alınanlar",
+      show: "Sık Alınanları Göster",
+      hide: "Sık Alınanları Gizle",
+      timesBought: "kez alındı",
+    },
+  },
+};
+
+export type Language = keyof typeof translations;

@@ -2,6 +2,11 @@
 
 import { createContext, useContext, useState, useEffect } from 'react';
 import { type Country } from '@/data/countries';
+import { type Category } from '@/data/categories';
+import { categories } from '@/data/categories';
+
+// Varsayılan kategori
+const DEFAULT_CATEGORY = categories[categories.length - 1]; // "Other" kategorisi
 
 export type CartItem = {
     id: string;
@@ -11,6 +16,7 @@ export type CartItem = {
     homeCountry: Country;
     exchangeRate: number;
     date: string;
+    category: Category;
 };
 
 type CartContextType = {
@@ -30,21 +36,30 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     const [items, setItems] = useState<CartItem[]>([]);
 
     useEffect(() => {
-        // Load cart from localStorage
-        const savedCart = localStorage.getItem('shopping-cart');
-        if (savedCart) {
-            setItems(JSON.parse(savedCart));
+        try {
+            const savedCart = localStorage.getItem('shopping-cart');
+            if (savedCart) {
+                const parsedItems = JSON.parse(savedCart);
+                // Eski kayıtlara kategori ekle
+                const updatedItems = parsedItems.map((item: CartItem) => ({
+                    ...item,
+                    category: item.category || DEFAULT_CATEGORY
+                }));
+                setItems(updatedItems);
+            }
+        } catch (error) {
+            console.error('Cart load error:', error);
         }
     }, []);
 
     useEffect(() => {
-        // Save cart to localStorage
         localStorage.setItem('shopping-cart', JSON.stringify(items));
     }, [items]);
 
     const addItem = (item: Omit<CartItem, 'id' | 'date'>) => {
         setItems(prev => [...prev, {
             ...item,
+            category: item.category || DEFAULT_CATEGORY,
             id: Math.random().toString(36).substring(7),
             date: new Date().toISOString()
         }]);

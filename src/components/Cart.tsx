@@ -32,18 +32,29 @@ export default function Cart() {
                         >
                             <div className={styles.itemInfo}>
                                 <div className={styles.priceInfo}>
-                                    <span className={styles.originalPrice}>
-                                        {item.touristCountry.flag} {new Intl.NumberFormat('ja-JP', {
-                                            style: 'currency',
-                                            currency: item.touristCountry.currency
-                                        }).format(item.originalPrice)}
-                                    </span>
-                                    <span className={styles.taxFreePrice}>
-                                        Tax-Free: {new Intl.NumberFormat('ja-JP', {
-                                            style: 'currency',
-                                            currency: item.touristCountry.currency
-                                        }).format(item.taxFreePrice)}
-                                    </span>
+                                    {item.originalPrice !== item.taxFreePrice ? (
+                                        <>
+                                            <span className={styles.originalPrice}>
+                                                {item.touristCountry.flag} {new Intl.NumberFormat('ja-JP', {
+                                                    style: 'currency',
+                                                    currency: item.touristCountry.currency
+                                                }).format(item.originalPrice)}
+                                            </span>
+                                            <span className={styles.taxFreePrice}>
+                                                Tax-Free: {new Intl.NumberFormat('ja-JP', {
+                                                    style: 'currency',
+                                                    currency: item.touristCountry.currency
+                                                }).format(item.taxFreePrice)}
+                                            </span>
+                                        </>
+                                    ) : (
+                                        <span className={styles.regularPrice}>
+                                            {item.touristCountry.flag} {new Intl.NumberFormat('ja-JP', {
+                                                style: 'currency',
+                                                currency: item.touristCountry.currency
+                                            }).format(item.originalPrice)}
+                                        </span>
+                                    )}
                                 </div>
                                 <div className={styles.homePrice}>
                                     {item.homeCountry.flag} {new Intl.NumberFormat('tr-TR', {
