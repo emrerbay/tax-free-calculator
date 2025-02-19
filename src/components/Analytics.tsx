@@ -21,10 +21,7 @@ import {
     LineElement,
     Title,
     Tooltip,
-    Legend,
-    Scale,
-    ScaleOptionsByType,
-    LinearScaleOptions
+    Legend
 } from 'chart.js';
 
 // Callback fonksiyonu için tip tanımı
