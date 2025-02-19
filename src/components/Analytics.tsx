@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useCart } from '@/context/CartContext';
 import dynamic from 'next/dynamic';
 import styles from './Analytics.module.css';
-import type { ChartOptions, Scale, CoreScaleOptions, Tick } from 'chart.js';
+import type { ChartOptions, Scale, CoreScaleOptions } from 'chart.js';
 
 // Chart'ı client-side'da dinamik olarak import edelim
 const Line = dynamic(
@@ -92,11 +92,10 @@ export default function Analytics() {
                 position: 'left' as const,
                 beginAtZero: true,
                 ticks: {
+                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
                     callback: function (
                         this: Scale<CoreScaleOptions>,
-                        tickValue: number | string,
-                        index: number,
-                        ticks: Tick[]
+                        tickValue: number | string
                     ): string {
                         const value = Number(tickValue);
                         if (items.length > 0 && !isNaN(value)) {
