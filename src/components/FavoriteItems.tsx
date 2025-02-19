@@ -6,6 +6,7 @@ import { useCart } from '@/context/CartContext';
 import { categories } from '@/data/categories';
 import { useTranslation } from '@/hooks/useTranslation';
 import styles from './FavoriteItems.module.css';
+import { type Category } from '@/data/categories';
 
 export default function FavoriteItems() {
     const [showFavorites, setShowFavorites] = useState(false);
