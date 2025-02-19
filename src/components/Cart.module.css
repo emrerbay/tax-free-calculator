@@ -1,0 +1,144 @@
+.cart {
+  background: var(--surface);
+  border-radius: 24px;
+  padding: 2rem;
+  margin-top: 2rem;
+  box-shadow: var(--shadow-lg);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--border);
+}
+
+.cartTitle {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--primary);
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.cartItems {
+  display: grid;
+  gap: 1rem;
+}
+
+.cartItem {
+  background: var(--background);
+  border-radius: 16px;
+  padding: 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid var(--border);
+  transition: all 0.2s;
+}
+
+.cartItem:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow);
+}
+
+.itemInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.priceInfo {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.originalPrice {
+  color: var(--foreground-muted);
+  text-decoration: line-through;
+}
+
+.taxFreePrice {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.homePrice {
+  font-family: var(--font-geist-mono);
+  font-weight: 500;
+}
+
+.itemActions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.date {
+  color: var(--foreground-muted);
+  font-size: 0.9rem;
+}
+
+.removeButton {
+  background: none;
+  border: none;
+  color: #ef4444;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.removeButton:hover {
+  background: #fee2e2;
+  transform: scale(1.1);
+}
+
+.cartTotal {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 2px solid var(--border);
+}
+
+.totalItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 600;
+  font-size: 1.1rem;
+  margin-bottom: 0.5rem;
+}
+
+.emptyCart {
+  text-align: center;
+  padding: 3rem;
+  background: var(--surface);
+  border-radius: 24px;
+  border: 2px dashed var(--border);
+}
+
+.emptyIcon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  display: block;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .cart {
+    padding: 1.5rem;
+  }
+
+  .cartItem {
+    flex-direction: column;
+    gap: 1rem;
+    text-align: center;
+  }
+
+  .itemActions {
+    width: 100%;
+    justify-content: center;
+  }
+}

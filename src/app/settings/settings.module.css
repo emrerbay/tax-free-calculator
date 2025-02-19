@@ -1,15 +1,18 @@
 .container {
-  max-width: 600px;
+  max-width: 800px;
   margin: 0 auto;
   padding: 40px 20px;
   font-family: var(--font-geist-sans);
 }
 
 .title {
-  font-size: 2rem;
-  font-weight: 600;
+  font-size: 2.5rem;
+  font-weight: 700;
   margin-bottom: 2rem;
   text-align: center;
+  background: linear-gradient(to right, #007cf0, #00dfd8);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .subtitle {
@@ -20,9 +23,11 @@
 
 .section {
   background: var(--gray-alpha-100);
-  border-radius: 12px;
+  border-radius: 16px;
   padding: 24px;
   margin-bottom: 24px;
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--gray-alpha-200);
 }
 
 .settingItem {
@@ -130,6 +135,68 @@ input:checked + .slider:before {
   opacity: 0.9;
 }
 
+.regionGroup {
+  margin-bottom: 24px;
+}
+
+.regionTitle {
+  font-size: 1.1rem;
+  font-weight: 500;
+  margin-bottom: 12px;
+  color: var(--gray-500);
+}
+
+.countryGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 12px;
+}
+
+.countryButton {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px;
+  background: var(--primary-dark);
+  border: 1px solid var(--gray-alpha-200);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.countryButton.selected {
+  background: var(--foreground);
+  color: var(--background);
+}
+
+.flag {
+  font-size: 1.5rem;
+}
+
+.countryName {
+  flex: 1;
+  font-size: 0.9rem;
+}
+
+.currency {
+  font-family: var(--font-geist-mono);
+  font-size: 0.8rem;
+  opacity: 0.7;
+}
+
+.rateInput {
+  position: relative;
+  width: 120px;
+}
+
+.percentSign {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--gray-500);
+}
+
 @media (max-width: 600px) {
   .container {
     padding: 20px;
@@ -149,4 +216,22 @@ input:checked + .slider:before {
   .select {
     width: 100%;
   }
+}
+
+.hint {
+  font-size: 0.9rem;
+  color: var(--gray-500);
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.countryButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.saveButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: var(--gray-alpha-200);
 }

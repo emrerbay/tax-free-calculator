@@ -5,7 +5,7 @@ import { Suspense } from 'react';
 import styles from './page.module.css';
 
 // Ana component'i client-side only olarak import ediyoruz
-const Calculator = dynamic(() => import('../components/Calculator'), {
+const Calculator = dynamic(() => import('@/components/Calculator'), {
   ssr: false,
 });
 

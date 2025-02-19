@@ -1,21 +1,10 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { motion } from 'framer-motion';
+import { AVAILABLE_COUNTRIES, groupedCountries, type Country } from '@/data/countries';
 import styles from './settings.module.css';
-
-type Country = {
-    code: string;
-    name: string;
-    currency: string;
-};
-
-const AVAILABLE_COUNTRIES: Country[] = [
-    { code: 'TR', name: 'Turkey', currency: 'TRY' },
-    { code: 'JP', name: 'Japan', currency: 'JPY' },
-    { code: 'US', name: 'United States', currency: 'USD' },
-    // Daha fazla ülke eklenebilir
-];
 
 export default function Settings() {
     const router = useRouter();
@@ -26,45 +15,65 @@ export default function Settings() {
         AVAILABLE_COUNTRIES[1], // Japan
     ]);
 
-    const handleCountryChange = (index: number, country: Country) => {
-        const newCountries = [...selectedCountries];
-        newCountries[index] = country;
-        setSelectedCountries(newCountries);
-    };
-
-    const handleAddThirdCountry = () => {
-        if (selectedCountries.length < 3) {
-            const availableCountry = AVAILABLE_COUNTRIES.find(
-                country => !selectedCountries.includes(country)
-            );
-            if (availableCountry) {
-                setSelectedCountries([...selectedCountries, availableCountry]);
+    useEffect(() => {
+        // Mevcut ayarları localStorage'dan yükle
+        try {
+            const savedSettings = localStorage.getItem('taxFreeSettings');
+            if (savedSettings) {
+                const settings = JSON.parse(savedSettings);
+                setIsTaxFreeEnabled(settings.isTaxFreeEnabled);
+                setTaxFreeRate(String(settings.taxFreeRate));
+                setSelectedCountries(settings.selectedCountries);
             }
+        } catch (error) {
+            console.error('LocalStorage error:', error);
         }
-    };
+    }, []);
 
-    const handleRemoveThirdCountry = () => {
-        if (selectedCountries.length === 3) {
-            setSelectedCountries(selectedCountries.slice(0, 2));
+    const handleCountrySelect = (country: Country) => {
+        if (selectedCountries.some(c => c.code === country.code)) {
+            // Ülke zaten seçiliyse, kaldır
+            setSelectedCountries(selectedCountries.filter(c => c.code !== country.code));
+        } else if (selectedCountries.length < 3) {
+            // Yeni ülke ekle
+            setSelectedCountries([...selectedCountries, country]);
         }
     };
 
     const handleSave = () => {
-        // Burada ayarları localStorage'a kaydedebiliriz
-        const settings = {
-            isTaxFreeEnabled,
-            taxFreeRate: Number(taxFreeRate),
-            selectedCountries,
-        };
-        localStorage.setItem('taxFreeSettings', JSON.stringify(settings));
-        router.push('/');
+        if (selectedCountries.length < 2) {
+            alert('Please select at least 2 countries');
+            return;
+        }
+
+        try {
+            const settings = {
+                isTaxFreeEnabled,
+                taxFreeRate: Number(taxFreeRate),
+                selectedCountries,
+            };
+            localStorage.setItem('taxFreeSettings', JSON.stringify(settings));
+            router.push('/');
+        } catch (error) {
+            console.error('Settings save error:', error);
+            alert('Failed to save settings. Please try again.');
+        }
     };
 
     return (
-        <div className={styles.container}>
+        <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className={styles.container}
+        >
             <h1 className={styles.title}>Settings</h1>
 
-            <div className={styles.section}>
+            <motion.div
+                className={styles.section}
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.1 }}
+            >
                 <div className={styles.settingItem}>
                     <label className={styles.label}>
                         Tax-Free Calculation
@@ -80,61 +89,74 @@ export default function Settings() {
                 </div>
 
                 {isTaxFreeEnabled && (
-                    <div className={styles.settingItem}>
+                    <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: 'auto', opacity: 1 }}
+                        className={styles.settingItem}
+                    >
                         <label className={styles.label}>
                             Tax-Free Rate (%)
-                            <input
-                                type="number"
-                                value={taxFreeRate}
-                                onChange={(e) => setTaxFreeRate(e.target.value)}
-                                min="0"
-                                max="100"
-                                className={styles.input}
-                            />
+                            <div className={styles.rateInput}>
+                                <input
+                                    type="number"
+                                    value={taxFreeRate}
+                                    onChange={(e) => setTaxFreeRate(e.target.value)}
+                                    min="0"
+                                    max="100"
+                                    className={styles.input}
+                                />
+                                <span className={styles.percentSign}>%</span>
+                            </div>
                         </label>
-                    </div>
+                    </motion.div>
                 )}
-            </div>
+            </motion.div>
 
-            <div className={styles.section}>
+            <motion.div
+                className={styles.section}
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.2 }}
+            >
                 <h2 className={styles.subtitle}>Country Selection</h2>
+                <p className={styles.hint}>Select 2-3 countries (min: 2, max: 3)</p>
 
-                {selectedCountries.map((country, index) => (
-                    <div key={index} className={styles.settingItem}>
-                        <label className={styles.label}>
-                            {index === 0 ? 'Home Country' : index === 1 ? 'Tourist Country' : 'Third Country'}
-                            <select
-                                value={country.code}
-                                onChange={(e) => {
-                                    const newCountry = AVAILABLE_COUNTRIES.find(c => c.code === e.target.value);
-                                    if (newCountry) handleCountryChange(index, newCountry);
-                                }}
-                                className={styles.select}
-                            >
-                                {AVAILABLE_COUNTRIES.map((c) => (
-                                    <option key={c.code} value={c.code}>
-                                        {c.name} ({c.currency})
-                                    </option>
-                                ))}
-                            </select>
-                        </label>
+                {Object.entries(groupedCountries).map(([region, countries]) => (
+                    <div key={region} className={styles.regionGroup}>
+                        <h3 className={styles.regionTitle}>{region}</h3>
+                        <div className={styles.countryGrid}>
+                            {countries.map((country) => (
+                                <motion.button
+                                    key={country.code}
+                                    whileHover={{ scale: 1.05 }}
+                                    whileTap={{ scale: 0.95 }}
+                                    className={`${styles.countryButton} ${selectedCountries.some(c => c.code === country.code) ? styles.selected : ''
+                                        }`}
+                                    onClick={() => handleCountrySelect(country)}
+                                    disabled={
+                                        selectedCountries.length >= 3 &&
+                                        !selectedCountries.some(c => c.code === country.code)
+                                    }
+                                >
+                                    <span className={styles.flag}>{country.flag}</span>
+                                    <span className={styles.countryName}>{country.name}</span>
+                                    <span className={styles.currency}>{country.currency}</span>
+                                </motion.button>
+                            ))}
+                        </div>
                     </div>
                 ))}
+            </motion.div>
 
-                {selectedCountries.length < 3 ? (
-                    <button onClick={handleAddThirdCountry} className={styles.addButton}>
-                        Add Third Country
-                    </button>
-                ) : (
-                    <button onClick={handleRemoveThirdCountry} className={styles.removeButton}>
-                        Remove Third Country
-                    </button>
-                )}
-            </div>
-
-            <button onClick={handleSave} className={styles.saveButton}>
+            <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={handleSave}
+                className={styles.saveButton}
+                disabled={selectedCountries.length < 2}
+            >
                 Save Settings
-            </button>
-        </div>
+            </motion.button>
+        </motion.div>
     );
 } 

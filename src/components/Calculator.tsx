@@ -3,12 +3,10 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import styles from '../app/page.module.css';
-
-type Country = {
-    code: string;
-    name: string;
-    currency: string;
-};
+import { motion } from 'framer-motion';
+import { type Country } from '@/data/countries';
+import { useCart } from '@/context/CartContext';
+import Cart from './Cart';
 
 type Settings = {
     isTaxFreeEnabled: boolean;
@@ -20,8 +18,8 @@ const DEFAULT_SETTINGS: Settings = {
     isTaxFreeEnabled: true,
     taxFreeRate: 10,
     selectedCountries: [
-        { code: 'TR', name: 'Turkey', currency: 'TRY' },
-        { code: 'JP', name: 'Japan', currency: 'JPY' },
+        { code: 'TR', name: 'Turkey', currency: 'TRY', flag: '🇹🇷', region: 'Europe' },
+        { code: 'JP', name: 'Japan', currency: 'JPY', flag: '🇯🇵', region: 'Asia' },
     ]
 };
 
@@ -31,6 +29,7 @@ export default function Calculator() {
     const [exchangeRates, setExchangeRates] = useState<Record<string, number>>({});
     const [loading, setLoading] = useState(true);
     const [mounted, setMounted] = useState(false);
+    const { addItem } = useCart();
 
     useEffect(() => {
         setMounted(true);
@@ -132,6 +131,25 @@ export default function Calculator() {
         }).format(taxFreeAmount);
     };
 
+    const handleAddToCart = () => {
+        if (!price || !settings) return;
+
+        const originalPrice = Number(price);
+        const taxFreePrice = originalPrice * (1 - settings.taxFreeRate / 100);
+        const exchangeRate = exchangeRates[settings.selectedCountries[0].currency] || 0;
+
+        addItem({
+            originalPrice,
+            taxFreePrice,
+            touristCountry: settings.selectedCountries[1],
+            homeCountry: settings.selectedCountries[0],
+            exchangeRate,
+        });
+
+        // Optional: Clear price after adding to cart
+        setPrice('');
+    };
+
     if (!mounted) {
         return <div className={styles.loading}>Loading...</div>;
     }
@@ -141,23 +159,45 @@ export default function Calculator() {
     }
 
     return (
-        <div className={styles.page}>
+        <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className={styles.page}
+        >
             <main className={styles.main}>
-                <h1 className={styles.title}>Tax-Free Shopping Calculator</h1>
+                <motion.h1
+                    initial={{ y: -20 }}
+                    animate={{ y: 0 }}
+                    className={styles.title}
+                >
+                    Tax-Free Shopping Calculator
+                </motion.h1>
 
-                <div className={styles.calculator}>
+                <motion.div
+                    initial={{ scale: 0.95 }}
+                    animate={{ scale: 1 }}
+                    className={styles.calculator}
+                >
                     <div className={styles.inputGroup}>
-                        <label htmlFor="price">
-                            Price ({settings.selectedCountries[1].currency})
+                        <label htmlFor="price" className={styles.inputLabel}>
+                            <span className={styles.flag}>
+                                {settings.selectedCountries[1].flag}
+                            </span>
+                            Price in {settings.selectedCountries[1].name}
                         </label>
-                        <input
-                            type="number"
-                            id="price"
-                            value={price}
-                            onChange={(e) => setPrice(e.target.value)}
-                            placeholder="Enter price..."
-                            className={styles.input}
-                        />
+                        <div className={styles.inputWrapper}>
+                            <span className={styles.currencyPrefix}>
+                                {settings.selectedCountries[1].currency}
+                            </span>
+                            <input
+                                type="number"
+                                id="price"
+                                value={price}
+                                onChange={(e) => setPrice(e.target.value)}
+                                placeholder="Enter amount..."
+                                className={styles.input}
+                            />
+                        </div>
                     </div>
 
                     <div className={styles.checkboxGroup}>
@@ -198,12 +238,30 @@ export default function Calculator() {
                             );
                         })}
                     </div>
-                </div>
 
-                <Link href="/settings" className={styles.settingsButton}>
-                    Settings
+                    <motion.button
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        onClick={handleAddToCart}
+                        className={styles.addToCartButton}
+                        disabled={!price}
+                    >
+                        Add to Cart 🛒
+                    </motion.button>
+                </motion.div>
+
+                <Cart />
+
+                <Link href="/settings" className={styles.settingsButtonWrapper}>
+                    <motion.div
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        className={styles.settingsButton}
+                    >
+                        ⚙️ Settings
+                    </motion.div>
                 </Link>
             </main>
-        </div>
+        </motion.div>
     );
 } 
