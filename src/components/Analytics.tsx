@@ -1,8 +1,8 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import { useCart } from '@/context/CartContext';
 import dynamic from 'next/dynamic';
-import { useEffect, useState } from 'react';
 import styles from './Analytics.module.css';
 
 // Chart'ı client-side'da dinamik olarak import edelim
@@ -23,6 +23,9 @@ import {
     Legend
 } from 'chart.js';
 
+// Callback fonksiyonu için tip tanımı
+type FormatCallback = (value: number, context: unknown) => string;
+
 export default function Analytics() {
     const { items } = useCart();
     const [mounted, setMounted] = useState(false);
@@ -41,7 +44,7 @@ export default function Analytics() {
         setMounted(true);
     }, []);
 
-    if (!mounted) return null;
+    if (!mounted || items.length === 0) return null;
 
     // Son 7 günün verilerini grupla
     const last7Days = [...Array(7)].map((_, i) => {
@@ -64,7 +67,7 @@ export default function Analytics() {
         labels: last7Days.map(date => new Date(date).toLocaleDateString()),
         datasets: [
             {
-                label: 'Günlük Tax-Free Alışveriş',
+                label: 'Daily Tax-Free Shopping',
                 data: dailyTotals.map(day => day.total),
                 borderColor: 'rgb(124, 58, 237)',
                 backgroundColor: 'rgba(124, 58, 237, 0.5)',
@@ -81,14 +84,14 @@ export default function Analytics() {
             },
             title: {
                 display: true,
-                text: 'Alışveriş Analizi'
+                text: 'Shopping Analysis'
             }
         },
         scales: {
             y: {
                 beginAtZero: true,
                 ticks: {
-                    callback: function (value: any) {
+                    callback: ((value: number) => {
                         if (items.length > 0) {
                             return new Intl.NumberFormat('ja-JP', {
                                 style: 'currency',
@@ -96,7 +99,7 @@ export default function Analytics() {
                             }).format(value);
                         }
                         return value;
-                    }
+                    }) as FormatCallback
                 }
             }
         }
