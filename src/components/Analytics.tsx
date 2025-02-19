@@ -24,9 +24,6 @@ import {
     Legend
 } from 'chart.js';
 
-// Callback fonksiyonu için tip tanımı
-type FormatCallback = (value: number, context: unknown) => string;
-
 export default function Analytics() {
     const { items } = useCart();
     const [mounted, setMounted] = useState(false);
